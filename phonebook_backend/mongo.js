@@ -1,56 +1,40 @@
+require('dotenv').config()
 const mongoose = require('mongoose')
 
-if (process.argv.length < 3) {
-  console.log('Please provide the password as an argument: node mongo.js <password>')
-  process.exit(1)
-}
+const url = process.env.MONGODB_URI
 
-const password = process.argv[2]
-
-const url = `mongodb+srv://fullstack:${password}@fullstackopen.11exm.mongodb.net/phonebook?retryWrites=true&w=majority`
+mongoose.set('strictQuery', false)
 
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
 })
-
 const Person = mongoose.model('Person', personSchema)
 
-const name = process.argv[3]
-const number = process.argv[4]
-
-if (name === undefined || number === undefined) {
-  console.log('phonebook:')
-  mongoose
-    .connect(url)
-    .then((result) => {
-      console.log('connected')
-      console.log(result)
-      Person.find({}).then(result => {
-        result.forEach(person => {
-          console.log(`${person.name} ${person.number}`)
-        })
-        mongoose.connection.close()
-      })
+if (process.argv.length === 3) {
+  mongoose.connect(url)
+  console.log('getting all contacts from database')
+  Person.find({}).then(result => {
+    result.forEach(person => {
+      console.log(person)
     })
-    .catch((err) => console.log(err))
+    mongoose.connection.close()
+  })
+} else if (process.argv.length === 5) {
+  mongoose.connect(url)
+  console.log('adding new contact to database')
+  const name = process.argv[3]
+  const number = process.argv[4]
+  const person = new Person({
+    name: name,
+    number: number,
+  })
+  person.save().then(() => {
+    console.log(`added new contact ${name} to database`)
+    mongoose.connection.close()
+  })
+
 } else {
-  mongoose
-    .connect(url)
-    .then((result) => {
-      console.log(result)
-      console.log('connected')
-
-      const person = new Person({
-        name: name,
-        number: number,
-      })
-
-      return person.save()
-    })
-    .then(() => {
-      console.log('contact saved!')
-      return mongoose.connection.close()
-    })
-    .catch((err) => console.log(err))
+  console.log('Please provide the correct number of arguments')
+  process.exit(1)
 }

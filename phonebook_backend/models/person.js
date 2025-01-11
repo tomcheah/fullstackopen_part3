@@ -1,34 +1,35 @@
 const mongoose = require('mongoose')
 
+mongoose.set('strictQuery', false)
+
 const url = process.env.MONGODB_URI
 
-mongoose
-  .connect(url)
-  .then(result => {
-    console.log('Connected to MongoDB')
-    console.log(result)
+console.log('connecting to ', url)
+
+mongoose.connect(url)
+  .then(() => {
+    console.log('connected to MongoDB')
   })
-  .catch((error) => {
-    console.log('Error connecting to MongoDB:', error.message)
+  .catch(error => {
+    console.log('error connecting to MongoDB:', error.message)
   })
 
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 3,
-    required: true,
+    minLength: 2,
+    required: [true, 'Person name required']
   },
   number: {
     type: String,
-    minLength: 9,
     validate: {
       validator: function(v) {
-        return /^\d{2,3}-\d{6,}$/.test(v)
+        return /^\d{2,3}-\d+$/.test(v)
       },
-      message: props => `${props.value} is not a valid phone number! Examples of valid phone numbers: 09-1234556 and 040-22334455`
+      message: props => `${props.value} is not a valid phone number!`
     },
-    required: [true, 'User phone number required']
-  }
+    required: [true, 'Person phone number required']
+  },
 })
 
 personSchema.set('toJSON', {

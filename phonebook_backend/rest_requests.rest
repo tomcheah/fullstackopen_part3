@@ -2,7 +2,7 @@ GET http://localhost:3001/api/persons
 ###
 GET http://localhost:3001/info
 ###
-GET http://localhost:3001/api/persons/1
+GET http://localhost:3001/api/persons/6782cb201aad469aa2afd752
 ###
 DELETE http://localhost:3001/api/persons/1
 ###
@@ -19,7 +19,7 @@ content-type: application/json
 
 {
     "name": "Bedbean23412",
-    "number": "029-2342342342342"
+    "number": "1"
 }
 ### 
 POST http://localhost:3001/api/persons/ HTTP/1.1
@@ -36,4 +36,30 @@ content-type: application/json
 {
     "name": "",
     "number": "123"
+}
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "a",
+    "number": "12345"
+}
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "asdfawefawef",
+    "number": "14-234134234234234"
+}
+### 
+GET http://localhost:3001/api/unsupportedEndpoint
+###
+PUT http://localhost:3001/api/persons/6782df6d1aad469aa2afd8c8 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "a",
+    "number": "123456"
 }
